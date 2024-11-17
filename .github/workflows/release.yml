@@ -13,34 +13,9 @@ jobs:
       matrix:
         settings:
           - platform: macos-latest
-            target: x86_64-apple-darwin                       # Intel-based
-            asset_name: vim-doge-helper-macos-x86_64
-            asset_path: ./bin/vim-doge-helper-macos-x86_64.tar.gz
-
-          - platform: macos-latest
             target: aarch64-apple-darwin                      # Apple Silicon
             asset_name: vim-doge-helper-macos-aarch64
             asset_path: ./bin/vim-doge-helper-macos-aarch64.tar.gz
-
-          - platform: ubuntu-20.04                            # Intel-based
-            target: x86_64-unknown-linux-gnu
-            asset_name: vim-doge-helper-linux-x86_64
-            asset_path: ./bin/vim-doge-helper-linux-x86_64.tar.gz
-
-          - platform: ubuntu-20.04                            # Apple Silicon
-            target: aarch64-unknown-linux-gnu
-            asset_name: vim-doge-helper-linux-aarch64
-            asset_path: ./bin/vim-doge-helper-linux-aarch64.tar.gz
-
-          - platform: windows-latest
-            target: x86_64-pc-windows-msvc                    # 64-bit
-            asset_name: vim-doge-helper-windows-x86_64
-            asset_path: ./bin/vim-doge-helper-windows-x86_64.zip
-
-          - platform: windows-latest                          # 32-bit
-            target: i686-pc-windows-msvc
-            asset_name: vim-doge-helper-windows-i686
-            asset_path: ./bin/vim-doge-helper-windows-i686.zip
 
     runs-on: ${{ matrix.settings.platform }}
     steps:
@@ -79,41 +54,3 @@ jobs:
           files: ${{ matrix.settings.asset_path }}
           draft: false
           prerelease: false
-
-  test_uploaded_builds:
-    name: Test uploaded builds
-    needs: build_and_upload_release_assets
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-20.04, windows-latest, macos-latest]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout kkoomen/vim-doge
-        uses: actions/checkout@v3
-
-      - name: Download binary (unix)
-        if: runner.os != 'Windows'
-        run: ./scripts/install.sh
-        shell: bash
-
-      - name: Test binary (unix)
-        if: runner.os != 'Windows'
-        run: |
-          if ! bin/vim-doge-helper --version > /dev/null 2>&1; then
-            echo "vim-doge-helper is not installed properly"
-            exit 1
-          fi
-        shell: bash
-
-      - name: Download binary (windows)
-        if: runner.os == 'Windows'
-        run: ./scripts/install.ps1
-
-      - name: Test binary (windows)
-        if: runner.os == 'Windows'
-        run: |
-          if (!(bin/vim-doge-helper.exe --version 2>$null)) {
-              Write-Host "vim-doge-helper is not installed properly"
-              exit 1
-          }

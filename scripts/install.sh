@@ -30,7 +30,7 @@ cd $BIN_DIR
 OS="$(uname)"
 ARCH="$(uname -m)"
 APP_VERSION=$(cat "$ROOT_DIR/.version")
-RELEASE_URL="https://github.com/kkoomen/vim-doge/releases/download/v$APP_VERSION"
+RELEASE_URL="https://github.com/VojtaM39/vim-doge-customized/releases/download/v$APP_VERSION"
 
 if [ $OS = 'Darwin' ]; then
   if [ $ARCH = 'arm64' ]; then
